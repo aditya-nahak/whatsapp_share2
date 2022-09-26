@@ -172,6 +172,7 @@ public class WhatsappShare implements FlutterPlugin, MethodCallHandler {
     private void shareFile(MethodCall call, Result result) {
         ArrayList<String> filePaths = new ArrayList<String>();
         ArrayList<Uri> files = new ArrayList<Uri>();
+        PackageManager pm=getPackageManager();
         try
         {
             String title = call.argument("title");
@@ -204,10 +205,12 @@ public class WhatsappShare implements FlutterPlugin, MethodCallHandler {
             }
 
             Intent intent = new Intent();
+            // Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
             intent.setType("*/*");
+            // PackageInfo info=pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
             intent.setPackage(packageName);
             intent.putExtra("jid",phone + "@s.whatsapp.net");
             intent.putExtra(Intent.EXTRA_SUBJECT, title);
@@ -218,7 +221,10 @@ public class WhatsappShare implements FlutterPlugin, MethodCallHandler {
             //Intent chooserIntent = Intent.createChooser(intent, chooserTitle);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+
+            Intent shareIntent = Intent.createChooser(intent, null);
+// startActivity(shareIntent);
+            context.startActivity(shareIntent);
 
             result.success(true);
         }
